@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  python-sdk:
+    image: pingen2/python-sdk
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: python-sdk
+    volumes:
+      - ./:/usr/src

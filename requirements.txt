@@ -1,0 +1,11 @@
+tox
+twine
+responses
+pytest-cov >= 4.1.0
+pytest-xdist >= 3.4.0
+pytest >= 7.0.0
+requests >= 2.31.0
+flake8
+black
+coverage >= 7.3.2
+typing-extensions

@@ -1,0 +1,2 @@
+include .coveragerc LICENSE DESCRIPTION.rst README.md tox.ini
+recursive-include tests *.py
