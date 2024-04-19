@@ -11,7 +11,7 @@ Python 3.8+
 You don't need this source code unless you want to modify the package. If you just want to use the package, just run:
 
 ```sh
-pip install --upgrade pingen
+pip install --upgrade pingen2sdk
 ```
 
 # Environments
@@ -33,7 +33,7 @@ pingen2sdk.client_secret = "YOU_SECRET"
 resp = pingen2sdk.OAuth.get_token(
     use_staging=True,
     grant_type="client_credentials",
-    scope={"letter", "batch", "webhook", "organisation_read"},
+    scope="letter batch webhook organisation_read",
 )
 
 access_token = resp["access_token"]
