@@ -16,6 +16,7 @@ class TestOAuth(object):
             scope="letter",
             state="RANDOMGENERATEDSTRING",
             client_id="testClientId",
+            response_type="code"
         )
 
         result = requests.utils.urlparse(url)
