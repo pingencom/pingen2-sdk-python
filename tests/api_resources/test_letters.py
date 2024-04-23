@@ -320,12 +320,9 @@ class TestLetters(object):
 
         response = letters.upload_and_create_letter(
             "tests/api_resources/files/lorem.pdf",
+            "lorem.pdf",
             "left",
-            True,
-            "fast",
-            "simplex",
-            "color",
-            "ACME GmbH | Strasse 3 | 8000 Zürich",
+            False,
         )
 
         assert response.data["data"]["id"] == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx111"
