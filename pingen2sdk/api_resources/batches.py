@@ -38,7 +38,7 @@ class Batches(object):
             supplied_headers,
         )
 
-    def upload_and_create_batch(
+    def upload_and_create(
         self,
         path_to_file: str,
         name: str,
@@ -74,7 +74,7 @@ class Batches(object):
         file_url, file_url_signature = file_upload.request_file_upload()
         file_upload.put_file(path_to_file, file_url)
 
-        return self.create_batch(
+        return self.create(
             file_url,
             file_url_signature,
             name,
@@ -88,7 +88,7 @@ class Batches(object):
             grouping_options_split_position,
         )
 
-    def create_batch(
+    def create(
         self,
         file_url: str,
         file_url_signature: str,
@@ -136,21 +136,21 @@ class Batches(object):
             attributes["grouping_options_split_size"] = grouping_options_split_size
 
         if grouping_options_split_separator is not None:
-            attributes[
-                "grouping_options_split_separator"
-            ] = grouping_options_split_separator
+            attributes["grouping_options_split_separator"] = (
+                grouping_options_split_separator
+            )
 
         if grouping_options_split_position is not None:
-            attributes[
-                "grouping_options_split_position"
-            ] = grouping_options_split_position
+            attributes["grouping_options_split_position"] = (
+                grouping_options_split_position
+            )
 
         return self.api_requestor.perform_post_request(
             "/organisations/%s/batches" % self.organisation_id,
             json.dumps({"data": {"type": "batches", "attributes": attributes}}),
         )
 
-    def send_batch(
+    def send(
         self,
         batch_id: str,
         delivery_product: Mapping[str, str],
@@ -174,7 +174,7 @@ class Batches(object):
             ),
         )
 
-    def cancel_batch(
+    def cancel(
         self,
         batch_id: str,
     ) -> pingen2sdk.PingenResponse:
@@ -182,7 +182,7 @@ class Batches(object):
             "/organisations/%s/batches/%s/cancel" % (self.organisation_id, batch_id),
         )
 
-    def delete_batch(
+    def delete(
         self,
         batch_id: str,
     ) -> pingen2sdk.PingenResponse:
@@ -190,7 +190,7 @@ class Batches(object):
             "/organisations/%s/batches/%s" % (self.organisation_id, batch_id),
         )
 
-    def edit_batch(
+    def edit(
         self,
         batch_id: str,
         paper_types: List[str],

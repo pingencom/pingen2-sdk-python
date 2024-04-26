@@ -262,7 +262,7 @@ class TestLetters(object):
             status=201,
         )
 
-        response = letters.create_letter(
+        response = letters.create(
             "https://s3.example/bucket/filename?signer=url",
             "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
             "lorem.pdf",
@@ -318,7 +318,7 @@ class TestLetters(object):
             status=201,
         )
 
-        response = letters.upload_and_create_letter(
+        response = letters.upload_and_create(
             "tests/api_resources/files/lorem.pdf",
             "lorem.pdf",
             "left",
@@ -352,7 +352,7 @@ class TestLetters(object):
             status=200,
         )
 
-        response = letters.send_letter(
+        response = letters.send(
             letter_id,
             "fast",
             "simplex",
@@ -382,7 +382,7 @@ class TestLetters(object):
             status=202,
         )
 
-        response = letters.cancel_letter(
+        response = letters.cancel(
             letter_id,
         )
 
@@ -403,7 +403,7 @@ class TestLetters(object):
             status=204,
         )
 
-        response = letters.delete_letter(
+        response = letters.delete(
             letter_id,
         )
 
@@ -433,7 +433,7 @@ class TestLetters(object):
                 status=401,
             )
 
-            letters.delete_letter(
+            letters.delete(
                 letter_id,
             )
 
@@ -457,7 +457,7 @@ class TestLetters(object):
             status=200,
         )
 
-        response = letters.edit_letter(
+        response = letters.edit(
             letter_id,
             list({"normal", "qr"}),
         )
@@ -487,7 +487,7 @@ class TestLetters(object):
             match=[responses.matchers.request_kwargs_matcher({"stream": True})],
         )
 
-        letters.get_letter_file(
+        letters.get_file(
             letter_id,
         )
 

@@ -26,3 +26,9 @@ from pingen2sdk.api import APIRequestor
 
 # API Resources
 from pingen2sdk.api_resources import *
+
+# PingenWebhook
+from pingen2sdk.webhook_event import WebhookEvent
+
+# PingenWebhook
+from pingen2sdk.incoming_webhook import Webhook

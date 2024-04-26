@@ -9,3 +9,4 @@ from pingen2sdk.api_resources.user_associations import (
 from pingen2sdk.api_resources.organisations import Organisations as Organisations
 from pingen2sdk.api_resources.batches import Batches as Batches
 from pingen2sdk.api_resources.batch_events import BatchEvents as BatchEvents
+from pingen2sdk.api_resources.webhooks import Webhooks as Webhooks

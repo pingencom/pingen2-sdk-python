@@ -39,7 +39,7 @@ class Letters(object):
             supplied_headers,
         )
 
-    def upload_and_create_letter(
+    def upload_and_create(
         self,
         path_to_file: str,
         file_original_name: str,
@@ -55,7 +55,7 @@ class Letters(object):
         file_url, file_signature = file_upload.request_file_upload()
         file_upload.put_file(path_to_file, file_url)
 
-        return self.create_letter(
+        return self.create(
             file_url,
             file_signature,
             file_original_name,
@@ -68,7 +68,7 @@ class Letters(object):
             meta_data,
         )
 
-    def create_letter(
+    def create(
         self,
         file_url: str,
         file_signature: str,
@@ -109,7 +109,7 @@ class Letters(object):
             json.dumps({"data": {"type": "letters", "attributes": attributes}}),
         )
 
-    def send_letter(
+    def send(
         self,
         letter_id: str,
         delivery_product: str,
@@ -133,7 +133,7 @@ class Letters(object):
             ),
         )
 
-    def cancel_letter(
+    def cancel(
         self,
         letter_id: str,
     ) -> pingen2sdk.PingenResponse:
@@ -141,7 +141,7 @@ class Letters(object):
             "/organisations/%s/letters/%s/cancel" % (self.organisation_id, letter_id),
         )
 
-    def delete_letter(
+    def delete(
         self,
         letter_id: str,
     ) -> pingen2sdk.PingenResponse:
@@ -149,7 +149,7 @@ class Letters(object):
             "/organisations/%s/letters/%s" % (self.organisation_id, letter_id),
         )
 
-    def edit_letter(
+    def edit(
         self,
         letter_id: str,
         paper_types: List[str],
@@ -169,7 +169,7 @@ class Letters(object):
             ),
         )
 
-    def get_letter_file(
+    def get_file(
         self,
         letter_id: str,
     ) -> IOBase:
