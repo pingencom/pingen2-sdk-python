@@ -44,7 +44,7 @@ organisation_id = organisationList.data["data"][0]["id"]
 
 LettersEndpoint = pingen2sdk.Letters(organisation_id, access_token, True)
 
-response = LettersEndpoint.upload_and_create_letter(
+response = LettersEndpoint.upload_and_create(
     "./letter.pdf",
     "sdk.pdf",
     "left",

@@ -225,7 +225,7 @@ class TestBatches(object):
             status=201,
         )
 
-        response = batches.create_batch(
+        response = batches.create(
             "https://s3.example/bucket/filename?signer=url",
             "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
             "lorem.pdf",
@@ -265,7 +265,7 @@ class TestBatches(object):
             status=201,
         )
 
-        response = batches.upload_and_create_batch(
+        response = batches.upload_and_create(
             "tests/api_resources/files/lorem.pdf",
             "testing",
             "flash",
@@ -302,7 +302,7 @@ class TestBatches(object):
             status=200,
         )
 
-        response = batches.send_batch(
+        response = batches.send(
             batch_id,
             [
                 {"country": "CH", "delivery_product": "postag_a"},
@@ -335,7 +335,7 @@ class TestBatches(object):
             status=202,
         )
 
-        response = batches.cancel_batch(
+        response = batches.cancel(
             batch_id,
         )
 
@@ -356,7 +356,7 @@ class TestBatches(object):
             status=204,
         )
 
-        response = batches.delete_batch(
+        response = batches.delete(
             batch_id,
         )
 
@@ -382,7 +382,7 @@ class TestBatches(object):
             status=200,
         )
 
-        response = batches.edit_batch(
+        response = batches.edit(
             batch_id,
             list({"normal", "qr"}),
         )
