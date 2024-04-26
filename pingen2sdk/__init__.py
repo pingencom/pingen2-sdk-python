@@ -31,4 +31,4 @@ from pingen2sdk.api_resources import *
 from pingen2sdk.webhook_event import WebhookEvent
 
 # PingenWebhook
-from pingen2sdk.incoming_webhook import Webhook
+from pingen2sdk.incoming_webhook import IncomingWebhook

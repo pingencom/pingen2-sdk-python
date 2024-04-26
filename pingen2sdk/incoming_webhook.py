@@ -7,7 +7,7 @@ import pingen2sdk.response
 from pingen2sdk import error
 
 
-class Webhook(object):
+class IncomingWebhook(object):
     @staticmethod
     def construct_event(
         payload: str, header: Mapping[str, str], secret: str
