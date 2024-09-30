@@ -34,7 +34,29 @@ class LetterEvents(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/issues" % self.organisation_id,
+            "/organisations/%s/letters/events/issues" % self.organisation_id,
+            params,
+            supplied_headers,
+        )
+
+    def get_undeliverable_collection(
+        self,
+        params: Optional[Mapping[str, Any]] = None,
+        supplied_headers: Optional[Mapping[str, str]] = None,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_get_request(
+            "/organisations/%s/letters/events/undeliverable" % self.organisation_id,
+            params,
+            supplied_headers,
+        )
+
+    def get_sent_collection(
+        self,
+        params: Optional[Mapping[str, Any]] = None,
+        supplied_headers: Optional[Mapping[str, str]] = None,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_get_request(
+            "/organisations/%s/letters/events/sent" % self.organisation_id,
             params,
             supplied_headers,
         )
