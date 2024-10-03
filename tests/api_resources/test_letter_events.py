@@ -64,7 +64,7 @@ class TestLetterEvents(object):
     @responses.activate
     def test_get_issue_collection(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/issues"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/issues"
             % pingen2sdk.api_production
         )
 
@@ -81,6 +81,54 @@ class TestLetterEvents(object):
         )
 
         response = letters_events.get_issue_collection()
+
+        assert len(response.data["data"][0]) == 0
+        assert response.status_code == 200
+
+    @responses.activate
+    def test_get_undeliverable_collection(self):
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/undeliverable"
+            % pingen2sdk.api_production
+        )
+
+        letters_events = self._construct_resource()
+
+        responses.get(
+            url,
+            headers={
+                "Content-Type": "application/vnd.api+json",
+                "X-Request-Id": "requestx-xxxx-xxxx-xxxx-xxxxxxxxxxx1",
+            },
+            json=_mock_empty_response(),
+            status=200,
+        )
+
+        response = letters_events.get_undeliverable_collection()
+
+        assert len(response.data["data"][0]) == 0
+        assert response.status_code == 200
+
+    @responses.activate
+    def test_get_sent_collection(self):
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/sent"
+            % pingen2sdk.api_production
+        )
+
+        letters_events = self._construct_resource()
+
+        responses.get(
+            url,
+            headers={
+                "Content-Type": "application/vnd.api+json",
+                "X-Request-Id": "requestx-xxxx-xxxx-xxxx-xxxxxxxxxxx1",
+            },
+            json=_mock_empty_response(),
+            status=200,
+        )
+
+        response = letters_events.get_sent_collection()
 
         assert len(response.data["data"][0]) == 0
         assert response.status_code == 200
