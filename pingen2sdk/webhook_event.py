@@ -7,5 +7,5 @@ class WebhookEvent(object):
     def __init__(self, body: str):
         self.body = body
 
-        if bool(body): # pragma: no cover
+        if bool(body):  # pragma: no cover
             self.data = json.loads(body.decode("utf-8"))

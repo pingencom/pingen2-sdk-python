@@ -4,7 +4,7 @@ You need to have an account in pingen and obtain oauth credentials for your desi
 
 How to obtain these are described here: https://api.pingen.com/documentation#section/Authentication/How-to-obtain-a-Client-ID
 
-Python 3.8+
+Python 3.9+
 
 # Installation
 
