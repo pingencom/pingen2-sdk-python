@@ -50,6 +50,17 @@ class LetterEvents(object):
             supplied_headers,
         )
 
+    def get_delivered_collection(
+        self,
+        params: Optional[Mapping[str, Any]] = None,
+        supplied_headers: Optional[Mapping[str, str]] = None,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_get_request(
+            "/organisations/%s/letters/events/delivered" % self.organisation_id,
+            params,
+            supplied_headers,
+        )
+
     def get_sent_collection(
         self,
         params: Optional[Mapping[str, Any]] = None,
