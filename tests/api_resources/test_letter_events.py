@@ -132,3 +132,27 @@ class TestLetterEvents(object):
 
         assert len(response.data["data"][0]) == 0
         assert response.status_code == 200
+
+    @responses.activate
+    def test_get_delivered_collection(self):
+        url = (
+                "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/delivered"
+                % pingen2sdk.api_production
+        )
+
+        letters_events = self._construct_resource()
+
+        responses.get(
+            url,
+            headers={
+                "Content-Type": "application/vnd.api+json",
+                "X-Request-Id": "requestx-xxxx-xxxx-xxxx-xxxxxxxxxxx1",
+            },
+            json=_mock_empty_response(),
+            status=200,
+        )
+
+        response = letters_events.get_delivered_collection()
+
+        assert len(response.data["data"][0]) == 0
+        assert response.status_code == 200
