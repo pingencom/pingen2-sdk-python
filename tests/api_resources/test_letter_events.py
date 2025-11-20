@@ -136,8 +136,8 @@ class TestLetterEvents(object):
     @responses.activate
     def test_get_delivered_collection(self):
         url = (
-                "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/delivered"
-                % pingen2sdk.api_production
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/delivered"
+            % pingen2sdk.api_production
         )
 
         letters_events = self._construct_resource()
