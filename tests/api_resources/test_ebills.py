@@ -2,13 +2,13 @@ import pingen2sdk
 import responses
 
 
-class TestEBills(object):
+class TestEbills(object):
     @staticmethod
     def _construct_resource():
         access_token = "test_access_token"
         organisation_id = "testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
 
-        return pingen2sdk.EBills(organisation_id, access_token)
+        return pingen2sdk.Ebills(organisation_id, access_token)
 
     @staticmethod
     def _get_expected_payload(ebill_id: str):

@@ -4,7 +4,7 @@ import json
 from typing import Any, Mapping, Optional, Dict
 
 
-class EBills(object):
+class Ebills(object):
     def __init__(
         self,
         organisation_id: str,
