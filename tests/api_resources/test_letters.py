@@ -290,6 +290,14 @@ class TestLetters(object):
                     "country": "PL",
                 },
             },
+            {
+                "preset": {
+                    "data": {
+                        "id": "xxxxxxxx-xxxx-xxxx-0000-xxxxxxxxx111",
+                        "type": "presets",
+                    }
+                }
+            },
         )
 
         assert response.data["data"]["id"] == "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx11"
