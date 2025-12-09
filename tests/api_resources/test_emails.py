@@ -36,6 +36,11 @@ class TestEmails(object):
                             "type": "organisations",
                         },
                     },
+                    "events": {
+                        "links": {
+                            "related": {"href": "string", "meta": {"count": 0}}
+                        }
+                    },
                 },
                 "links": {"self": "string"},
                 "meta": {
@@ -144,6 +149,11 @@ class TestEmails(object):
                                     "type": "organisations",
                                 },
                             },
+                            "events": {
+                                "links": {
+                                    "related": {"href": "string", "meta": {"count": 0}}
+                                }
+                            },
                         },
                         "links": {"self": "string"},
                     }
@@ -208,6 +218,14 @@ class TestEmails(object):
                 "reply_name": "ACME AG",
                 "subject": "Your new invoice Number xyz",
                 "content": "Dear recipient\\n\\nAttached is your invoice",
+            },
+            {
+                "preset": {
+                    "data": {
+                        "id": "xxxxxxxx-xxxx-xxxx-0000-xxxxxxxxx111",
+                        "type": "presets",
+                    }
+                }
             },
         )
 

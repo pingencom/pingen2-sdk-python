@@ -43,6 +43,7 @@ class Emails(object):
         file_original_name: str,
         auto_send: False,
         meta_data: Optional[Dict],
+        relationships: Optional[Dict] = None,
     ) -> pingen2sdk.PingenResponse:
         file_upload = pingen2sdk.FileUpload(self.api_requestor)
         file_url, file_signature = file_upload.request_file_upload()
@@ -54,6 +55,7 @@ class Emails(object):
             file_original_name,
             auto_send,
             meta_data,
+            relationships
         )
 
     def create(
@@ -63,6 +65,7 @@ class Emails(object):
         file_original_name: str,
         auto_send: False,
         meta_data: Optional[Dict],
+        relationships: Optional[Dict] = None,
     ) -> pingen2sdk.PingenResponse:
         attributes = {
             "file_original_name": file_original_name,
@@ -72,7 +75,17 @@ class Emails(object):
             "meta_data": meta_data,
         }
 
+        payload: Dict[str, Any] = {
+            "data": {
+                "type": "emails",
+                "attributes": attributes,
+            }
+        }
+
+        if relationships is not None:
+            payload["data"]["relationships"] = relationships
+
         return self.api_requestor.perform_post_request(
             "/organisations/%s/deliveries/emails" % self.organisation_id,
-            json.dumps({"data": {"type": "emails", "attributes": attributes}}),
+            json.dumps(payload),
         )
