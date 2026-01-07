@@ -50,6 +50,7 @@ class Letters(object):
         print_spectrum: Optional[str] = None,
         sender_address: Optional[str] = None,
         meta_data: Optional[Dict] = None,
+        relationships: Optional[Dict] = None,
     ) -> pingen2sdk.PingenResponse:
         file_upload = pingen2sdk.FileUpload(self.api_requestor)
         file_url, file_signature = file_upload.request_file_upload()
@@ -66,6 +67,7 @@ class Letters(object):
             print_spectrum,
             sender_address,
             meta_data,
+            relationships,
         )
 
     def create(
@@ -80,6 +82,7 @@ class Letters(object):
         print_spectrum: Optional[str] = None,
         sender_address: Optional[str] = None,
         meta_data: Optional[Dict] = None,
+        relationships: Optional[Dict] = None,
     ) -> pingen2sdk.PingenResponse:
         attributes = {
             "file_original_name": file_original_name,
@@ -104,9 +107,19 @@ class Letters(object):
         if meta_data is not None:
             attributes["meta_data"] = meta_data
 
+        payload: Dict[str, Any] = {
+            "data": {
+                "type": "letters",
+                "attributes": attributes,
+            }
+        }
+
+        if relationships is not None:
+            payload["data"]["relationships"] = relationships
+
         return self.api_requestor.perform_post_request(
             "/organisations/%s/letters" % self.organisation_id,
-            json.dumps({"data": {"type": "letters", "attributes": attributes}}),
+            json.dumps(payload),
         )
 
     def send(

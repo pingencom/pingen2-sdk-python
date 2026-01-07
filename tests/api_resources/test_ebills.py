@@ -41,6 +41,11 @@ class TestEbills(object):
                             "type": "organisations",
                         },
                     },
+                    "events": {
+                        "links": {
+                            "related": {"href": "string", "meta": {"count": 0}}
+                        }
+                    },
                 },
                 "links": {"self": "string"},
             },
@@ -146,6 +151,11 @@ class TestEbills(object):
                                     "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
                                     "type": "organisations",
                                 },
+                            },
+                            "events": {
+                                "links": {
+                                    "related": {"href": "string", "meta": {"count": 0}}
+                                }
                             },
                         },
                         "links": {"self": "string"},
