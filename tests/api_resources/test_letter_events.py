@@ -35,7 +35,7 @@ class TestLetterEvents(object):
     def test_get_collection(self):
         letter_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s/events"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s/events"
             % (
                 pingen2sdk.api_production,
                 letter_id,
@@ -64,7 +64,7 @@ class TestLetterEvents(object):
     @responses.activate
     def test_get_issue_collection(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/issues"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/events/issues"
             % pingen2sdk.api_production
         )
 
@@ -88,7 +88,7 @@ class TestLetterEvents(object):
     @responses.activate
     def test_get_undeliverable_collection(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/undeliverable"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/events/undeliverable"
             % pingen2sdk.api_production
         )
 
@@ -112,7 +112,7 @@ class TestLetterEvents(object):
     @responses.activate
     def test_get_sent_collection(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/sent"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/events/sent"
             % pingen2sdk.api_production
         )
 
@@ -136,7 +136,7 @@ class TestLetterEvents(object):
     @responses.activate
     def test_get_delivered_collection(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/events/delivered"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/events/delivered"
             % pingen2sdk.api_production
         )
 

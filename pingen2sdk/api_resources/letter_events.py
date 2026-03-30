@@ -23,7 +23,7 @@ class LetterEvents(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/%s/events" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s/events" % (self.organisation_id, letter_id),
             params,
             supplied_headers,
         )
@@ -34,7 +34,7 @@ class LetterEvents(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/events/issues" % self.organisation_id,
+            "/organisations/%s/deliveries/letters/events/issues" % self.organisation_id,
             params,
             supplied_headers,
         )
@@ -45,7 +45,7 @@ class LetterEvents(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/events/undeliverable" % self.organisation_id,
+            "/organisations/%s/deliveries/letters/events/undeliverable" % self.organisation_id,
             params,
             supplied_headers,
         )
@@ -56,7 +56,7 @@ class LetterEvents(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/events/delivered" % self.organisation_id,
+            "/organisations/%s/deliveries/letters/events/delivered" % self.organisation_id,
             params,
             supplied_headers,
         )
@@ -67,7 +67,7 @@ class LetterEvents(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/events/sent" % self.organisation_id,
+            "/organisations/%s/deliveries/letters/events/sent" % self.organisation_id,
             params,
             supplied_headers,
         )

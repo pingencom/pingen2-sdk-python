@@ -119,7 +119,7 @@ class TestLetters(object):
     @responses.activate
     def test_get_letter(self):
         letter_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s" % (
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s" % (
             pingen2sdk.api_production,
             letter_id,
         )
@@ -150,7 +150,7 @@ class TestLetters(object):
     @responses.activate
     def test_get_collection(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters"
             % pingen2sdk.api_production
         )
 
@@ -246,7 +246,7 @@ class TestLetters(object):
 
     @responses.activate
     def test_create_letter(self):
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters" % (
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters" % (
             pingen2sdk.api_production,
         )
 
@@ -309,7 +309,7 @@ class TestLetters(object):
 
     @responses.activate
     def test_upload_and_create_letter(self):
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters" % (
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters" % (
             pingen2sdk.api_production,
         )
 
@@ -344,7 +344,7 @@ class TestLetters(object):
     def test_send_letter(self):
         letter_id = "testsend-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s/send"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s/send"
             % (pingen2sdk.api_production, letter_id)
         )
 
@@ -379,7 +379,7 @@ class TestLetters(object):
     def test_cancel_letter(self):
         letter_id = "testsend-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s/cancel"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s/cancel"
             % (pingen2sdk.api_production, letter_id)
         )
 
@@ -399,7 +399,7 @@ class TestLetters(object):
     @responses.activate
     def test_delete_letter(self):
         letter_id = "testdelx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s" % (
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s" % (
             pingen2sdk.api_production,
             letter_id,
         )
@@ -421,7 +421,7 @@ class TestLetters(object):
     def test_delete_letter_unauthorize(self):
         with pytest.raises(pingen2sdk.PingenError):
             letter_id = "testdelx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
-            url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s" % (
+            url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s" % (
                 pingen2sdk.api_production,
                 letter_id,
             )
@@ -448,7 +448,7 @@ class TestLetters(object):
     @responses.activate
     def test_edit_letter(self):
         letter_id = "testedit-xxxx-xxxx-xxxx-xxxxxxxxx551"
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s" % (
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s" % (
             pingen2sdk.api_production,
             letter_id,
         )
@@ -481,7 +481,7 @@ class TestLetters(object):
     def test_get_letter_file(self):
         letter_id = "testsend-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/%s/file"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/%s/file"
             % (pingen2sdk.api_staging, letter_id)
         )
 
@@ -502,7 +502,7 @@ class TestLetters(object):
     @responses.activate
     def test_calculate_price(self):
         url = (
-            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/letters/price-calculator"
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/letters/price-calculator"
             % pingen2sdk.api_production
         )
 

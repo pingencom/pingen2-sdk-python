@@ -23,7 +23,7 @@ class Letters(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters/%s" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s" % (self.organisation_id, letter_id),
             params,
             supplied_headers,
         )
@@ -34,7 +34,7 @@ class Letters(object):
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/letters" % self.organisation_id,
+            "/organisations/%s/deliveries/letters" % self.organisation_id,
             params,
             supplied_headers,
         )
@@ -118,7 +118,7 @@ class Letters(object):
             payload["data"]["relationships"] = relationships
 
         return self.api_requestor.perform_post_request(
-            "/organisations/%s/letters" % self.organisation_id,
+            "/organisations/%s/deliveries/letters" % self.organisation_id,
             json.dumps(payload),
         )
 
@@ -130,7 +130,7 @@ class Letters(object):
         print_spectrum: str,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_patch_request(
-            "/organisations/%s/letters/%s/send" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s/send" % (self.organisation_id, letter_id),
             json.dumps(
                 {
                     "data": {
@@ -151,7 +151,7 @@ class Letters(object):
         letter_id: str,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_cancel_request(
-            "/organisations/%s/letters/%s/cancel" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s/cancel" % (self.organisation_id, letter_id),
         )
 
     def delete(
@@ -159,7 +159,7 @@ class Letters(object):
         letter_id: str,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_delete_request(
-            "/organisations/%s/letters/%s" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s" % (self.organisation_id, letter_id),
         )
 
     def edit(
@@ -168,7 +168,7 @@ class Letters(object):
         paper_types: List[str],
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_patch_request(
-            "/organisations/%s/letters/%s" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s" % (self.organisation_id, letter_id),
             json.dumps(
                 {
                     "data": {
@@ -187,7 +187,7 @@ class Letters(object):
         letter_id: str,
     ) -> IOBase:
         return self.api_requestor.perform_stream_request(
-            "/organisations/%s/letters/%s/file" % (self.organisation_id, letter_id),
+            "/organisations/%s/deliveries/letters/%s/file" % (self.organisation_id, letter_id),
         )
 
     def calculate_price(
@@ -199,7 +199,7 @@ class Letters(object):
         delivery_product: str,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_post_request(
-            "/organisations/%s/letters/price-calculator" % self.organisation_id,
+            "/organisations/%s/deliveries/letters/price-calculator" % self.organisation_id,
             json.dumps(
                 {
                     "data": {
