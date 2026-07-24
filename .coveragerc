@@ -2,3 +2,5 @@
 branch = true
 parallel = true
 source = pingen2sdk
+omit =
+    tests/integration/*

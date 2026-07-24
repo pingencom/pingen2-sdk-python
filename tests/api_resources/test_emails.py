@@ -18,9 +18,9 @@ class TestEmails(object):
                 "type": "emails",
                 "attributes": {
                     "status": "string",
-                    "file_original_name": "lorem.pdf",
+                    "file_original_name": "test.pdf",
                     "file_pages": 2,
-                    "recipient_identifier": "info@example.com",
+                    "recipient_identifier": "info@acme.com",
                     "price_currency": "CHF",
                     "price_value": 1.25,
                     "source": "api",
@@ -37,16 +37,28 @@ class TestEmails(object):
                         },
                     },
                     "events": {
-                        "links": {
-                            "related": {"href": "string", "meta": {"count": 0}}
-                        }
+                        "links": {"related": {"href": "string", "meta": {"count": 0}}}
+                    },
+                    "batch": {
+                        "links": {"related": "string"},
+                        "data": {
+                            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                            "type": "batches",
+                        },
                     },
                 },
                 "links": {"self": "string"},
                 "meta": {
                     "abilities": {
                         "self": {
+                            "get-pdf-raw": "ok",
+                            "get-pdf-validation": "ok",
+                            "restore-original": "ok",
                             "delete": "ok",
+                            "cancel": "ok",
+                            "apply-preset": "ok",
+                            "create-preset": "ok",
+                            "revalidate": "ok",
                         }
                     }
                 },
@@ -81,9 +93,12 @@ class TestEmails(object):
     @responses.activate
     def test_get_email(self):
         email_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails/%s" % (
-            pingen2sdk.api_production,
-            email_id,
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails/%s"
+            % (
+                pingen2sdk.api_production,
+                email_id,
+            )
         )
 
         emails = self._construct_resource()
@@ -131,7 +146,7 @@ class TestEmails(object):
                         "type": "emails",
                         "attributes": {
                             "status": "string",
-                            "file_original_name": "lorem.pdf",
+                            "file_original_name": "test.pdf",
                             "file_pages": 2,
                             "recipient_identifier": "info@example.com",
                             "price_currency": "CHF",
@@ -189,8 +204,9 @@ class TestEmails(object):
 
     @responses.activate
     def test_create_email(self):
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails" % (
-            pingen2sdk.api_production,
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails"
+            % (pingen2sdk.api_production,)
         )
 
         emails = self._construct_resource()
@@ -208,7 +224,7 @@ class TestEmails(object):
         response = emails.create(
             "https://s3.example/bucket/filename?signer=url",
             "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
-            "lorem.pdf",
+            "test.pdf",
             True,
             {
                 "sender_name": "ACME GmbH",
@@ -238,8 +254,9 @@ class TestEmails(object):
 
     @responses.activate
     def test_upload_and_create_email(self):
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails" % (
-            pingen2sdk.api_production,
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails"
+            % (pingen2sdk.api_production,)
         )
 
         emails = self._construct_resource()
@@ -256,8 +273,8 @@ class TestEmails(object):
         )
 
         response = emails.upload_and_create(
-            "tests/api_resources/files/lorem.pdf",
-            "lorem.pdf",
+            "tests/api_resources/files/test.pdf",
+            "test.pdf",
             False,
             None,
         )
@@ -268,3 +285,58 @@ class TestEmails(object):
             "Content-Type": "application/vnd.api+json",
             "X-Request-Id": "requestx-xxxx-xxxx-xxxx-xxxxxxxxxxx3",
         }
+
+    @responses.activate
+    def test_cancel_email(self):
+        email_id = "testcanc-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails/%s/cancel"
+            % (pingen2sdk.api_production, email_id)
+        )
+
+        emails = self._construct_resource()
+
+        responses.patch(url, status=202)
+
+        response = emails.cancel(email_id)
+
+        assert response.status_code == 202
+
+    @responses.activate
+    def test_delete_email(self):
+        email_id = "testdelx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails/%s"
+            % (
+                pingen2sdk.api_production,
+                email_id,
+            )
+        )
+
+        emails = self._construct_resource()
+
+        responses.delete(url, status=204)
+
+        response = emails.delete(email_id)
+
+        assert response.status_code == 204
+
+    @responses.activate
+    def test_get_email_file(self):
+        email_id = "testfile-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/emails/%s/file"
+            % (pingen2sdk.api_staging, email_id)
+        )
+
+        access_token = "test_access_token"
+        organisation_id = "testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+
+        emails = pingen2sdk.Emails(organisation_id, access_token, True)
+
+        responses.get(
+            url,
+            match=[responses.matchers.request_kwargs_matcher({"stream": True})],
+        )
+
+        emails.get_file(email_id)

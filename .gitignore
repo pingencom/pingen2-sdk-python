@@ -2,3 +2,8 @@
 __pycache__
 letter.pdf
 manualTest.py
+.env
+.venv/
+.tox/
+.coverage
+*.egg-info/

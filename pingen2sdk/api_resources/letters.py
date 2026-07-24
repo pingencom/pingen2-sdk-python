@@ -2,7 +2,7 @@ import pingen2sdk
 import json
 
 from io import IOBase
-from typing import Any, Mapping, Optional, Dict, List
+from typing import Any, Mapping, Optional, Dict, List, Union
 from typing_extensions import Literal
 
 
@@ -10,7 +10,7 @@ class Letters(object):
     def __init__(
         self,
         organisation_id: str,
-        access_token: str,
+        access_token: Union[str, "pingen2sdk.OAuth"],
         use_staging: bool = False,
     ):
         self.organisation_id = organisation_id

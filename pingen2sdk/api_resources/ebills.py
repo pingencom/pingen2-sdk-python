@@ -1,14 +1,15 @@
 import pingen2sdk
 import json
 
-from typing import Any, Mapping, Optional, Dict
+from io import IOBase
+from typing import Any, Mapping, Optional, Dict, Union
 
 
 class Ebills(object):
     def __init__(
         self,
         organisation_id: str,
-        access_token: str,
+        access_token: Union[str, "pingen2sdk.OAuth"],
         use_staging: bool = False,
     ):
         self.organisation_id = organisation_id
@@ -90,4 +91,47 @@ class Ebills(object):
         return self.api_requestor.perform_post_request(
             "/organisations/%s/deliveries/ebills" % self.organisation_id,
             json.dumps(payload),
+        )
+
+    def send(
+        self,
+        ebill_id: str,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_patch_request(
+            "/organisations/%s/deliveries/ebills/%s/send"
+            % (self.organisation_id, ebill_id),
+            json.dumps(
+                {
+                    "data": {
+                        "id": ebill_id,
+                        "type": "ebills",
+                    }
+                }
+            ),
+        )
+
+    def cancel(
+        self,
+        ebill_id: str,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_cancel_request(
+            "/organisations/%s/deliveries/ebills/%s/cancel"
+            % (self.organisation_id, ebill_id),
+        )
+
+    def delete(
+        self,
+        ebill_id: str,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_delete_request(
+            "/organisations/%s/deliveries/ebills/%s" % (self.organisation_id, ebill_id),
+        )
+
+    def get_file(
+        self,
+        ebill_id: str,
+    ) -> IOBase:
+        return self.api_requestor.perform_stream_request(
+            "/organisations/%s/deliveries/ebills/%s/file"
+            % (self.organisation_id, ebill_id),
         )

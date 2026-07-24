@@ -1,7 +1,7 @@
 import pingen2sdk
 import json
 
-from typing import Any, Mapping, Optional, List
+from typing import Any, Dict, Mapping, Optional, List, Union
 from typing_extensions import Literal
 
 
@@ -9,7 +9,7 @@ class Batches(object):
     def __init__(
         self,
         organisation_id: str,
-        access_token: str,
+        access_token: Union[str, "pingen2sdk.OAuth"],
         use_staging: bool = False,
     ):
         self.organisation_id = organisation_id
@@ -69,6 +69,7 @@ class Batches(object):
         grouping_options_split_position: Optional[
             Literal["first_page", "last_page"]
         ] = None,
+        channel_type: Optional[Literal["post", "email", "ebill"]] = None,
     ) -> pingen2sdk.PingenResponse:
         file_upload = pingen2sdk.FileUpload(self.api_requestor)
         file_url, file_url_signature = file_upload.request_file_upload()
@@ -86,6 +87,7 @@ class Batches(object):
             grouping_options_split_size,
             grouping_options_split_separator,
             grouping_options_split_position,
+            channel_type,
         )
 
     def create(
@@ -120,8 +122,9 @@ class Batches(object):
         grouping_options_split_position: Optional[
             Literal["first_page", "last_page"]
         ] = None,
+        channel_type: Optional[Literal["post", "email", "ebill"]] = None,
     ) -> pingen2sdk.PingenResponse:
-        attributes = {
+        attributes: Dict[str, Any] = {
             "file_url": file_url,
             "file_url_signature": file_url_signature,
             "name": name,
@@ -131,6 +134,9 @@ class Batches(object):
             "grouping_type": grouping_type,
             "grouping_options_split_type": grouping_options_split_type,
         }
+
+        if channel_type is not None:
+            attributes["channel_type"] = channel_type
 
         if grouping_options_split_size is not None:
             attributes["grouping_options_split_size"] = grouping_options_split_size
@@ -153,22 +159,87 @@ class Batches(object):
     def send(
         self,
         batch_id: str,
-        delivery_product: Mapping[str, str],
-        print_mode: str,
-        print_spectrum: str,
+        channel_type: Literal["post", "email", "ebill"] = "post",
+        delivery_product: Optional[str] = None,
+        print_mode: Optional[str] = None,
+        print_spectrum: Optional[str] = None,
     ) -> pingen2sdk.PingenResponse:
+        """Submit a batch for delivery.
+
+        The request payload depends on the batch ``channel_type``:
+
+        * ``post``  – requires ``delivery_product``
+          (``fast`` / ``cheap`` / ``bulk`` / ``premium`` / ``registered``),
+          ``print_mode`` (``simplex`` / ``duplex``) and
+          ``print_spectrum`` (``color`` / ``grayscale``).
+        * ``email`` – ``delivery_product`` defaults to ``electronic_email``.
+        * ``ebill`` – ``delivery_product`` defaults to ``electronic_ebill``.
+        """
+        attributes: Dict[str, Any] = {}
+
+        if channel_type == "email":
+            attributes["delivery_product"] = delivery_product or "electronic_email"
+        elif channel_type == "ebill":
+            attributes["delivery_product"] = delivery_product or "electronic_ebill"
+        else:
+            attributes["delivery_product"] = delivery_product
+            attributes["print_mode"] = print_mode
+            attributes["print_spectrum"] = print_spectrum
+
         return self.api_requestor.perform_patch_request(
             "/organisations/%s/batches/%s/send" % (self.organisation_id, batch_id),
             json.dumps(
                 {
                     "data": {
                         "id": batch_id,
+                        "type": "batches_channel_%s_send" % channel_type,
+                        "attributes": attributes,
+                    }
+                }
+            ),
+        )
+
+    def update(
+        self,
+        batch_id: str,
+        name: Optional[str] = None,
+        icon: Optional[
+            Literal[
+                "campaign",
+                "megaphone",
+                "wave-hand",
+                "flash",
+                "rocket",
+                "bell",
+                "percent-tag",
+                "percent-badge",
+                "present",
+                "receipt",
+                "document",
+                "information",
+                "calendar",
+                "newspaper",
+                "crown",
+                "virus",
+            ]
+        ] = None,
+    ) -> pingen2sdk.PingenResponse:
+        attributes: Dict[str, Any] = {}
+
+        if name is not None:
+            attributes["name"] = name
+
+        if icon is not None:
+            attributes["icon"] = icon
+
+        return self.api_requestor.perform_patch_request(
+            "/organisations/%s/batches/%s" % (self.organisation_id, batch_id),
+            json.dumps(
+                {
+                    "data": {
+                        "id": batch_id,
                         "type": "batches",
-                        "attributes": {
-                            "delivery_products": delivery_product,
-                            "print_mode": print_mode,
-                            "print_spectrum": print_spectrum,
-                        },
+                        "attributes": attributes,
                     }
                 }
             ),
@@ -185,9 +256,31 @@ class Batches(object):
     def delete(
         self,
         batch_id: str,
+        with_deliverables: bool = True,
     ) -> pingen2sdk.PingenResponse:
+        """Delete a batch.
+
+        ``with_deliverables`` controls whether the deliverables contained in the
+        batch are deleted as well (``True``) or kept as individual deliverables
+        (``False``).
+        """
         return self.api_requestor.perform_delete_request(
             "/organisations/%s/batches/%s" % (self.organisation_id, batch_id),
+            json.dumps(
+                {
+                    "data": {
+                        "type": "batches",
+                        "id": batch_id,
+                        "attributes": {
+                            # TODO: `with_letters` is still required by the API but
+                            # is deprecated in favour of `with_deliverables`. Remove
+                            # it once the API no longer requires it.
+                            "with_letters": with_deliverables,
+                            "with_deliverables": with_deliverables,
+                        },
+                    }
+                }
+            ),
         )
 
     def edit(

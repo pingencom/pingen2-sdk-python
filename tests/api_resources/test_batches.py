@@ -18,10 +18,12 @@ class TestBatches(object):
                 "type": "batches",
                 "attributes": {
                     "name": "Monthly Invoicing August 2022",
+                    "channel_type": "post",
                     "icon": "campaign",
                     "status": "string",
-                    "file_original_name": "lorem.pdf",
+                    "file_original_name": "test.pdf",
                     "letter_count": 2,
+                    "deliverable_count": 2,
                     "address_position": "left",
                     "print_mode": "simplex",
                     "print_spectrum": "color",
@@ -54,6 +56,8 @@ class TestBatches(object):
                             "edit": "ok",
                             "change-window-position": "ok",
                             "add-attachment": "ok",
+                            "add-deliverables": "ok",
+                            "remove-deliverables": "ok",
                         }
                     }
                 },
@@ -134,9 +138,11 @@ class TestBatches(object):
                         "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
                         "type": "batches",
                         "attributes": {
+                            "channel_type": "post",
                             "status": "string",
-                            "file_original_name": "lorem.pdf",
+                            "file_original_name": "test.pdf",
                             "file_pages": 2,
+                            "deliverable_count": 2,
                             "address": "Hans Meier\nExample street 4\n8000 Zürich\nSwitzerland",
                             "address_position": "left",
                             "country": "CH",
@@ -228,9 +234,9 @@ class TestBatches(object):
         response = batches.create(
             "https://s3.example/bucket/filename?signer=url",
             "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
-            "lorem.pdf",
+            "test.pdf",
             "flash",
-            "lorem.pdf",
+            "test.pdf",
             "left",
             "merge",
             "page",
@@ -266,10 +272,10 @@ class TestBatches(object):
         )
 
         response = batches.upload_and_create(
-            "tests/api_resources/files/lorem.pdf",
+            "tests/api_resources/files/test.pdf",
             "testing",
             "flash",
-            "lorem.pdf",
+            "test.pdf",
             "left",
             "merge",
             "file",
@@ -304,10 +310,8 @@ class TestBatches(object):
 
         response = batches.send(
             batch_id,
-            [
-                {"country": "CH", "delivery_product": "postag_a"},
-                {"country": "DE", "delivery_product": "fast"},
-            ],
+            "post",
+            "fast",
             "simplex",
             "color",
         )
@@ -319,6 +323,116 @@ class TestBatches(object):
             "X-Request-Id": "requestx-xxxx-xxxx-xxxx-xxxxxxxxx332",
         }
         assert response.request_id == "requestx-xxxx-xxxx-xxxx-xxxxxxxxx332"
+
+    @responses.activate
+    def test_send_batch_email(self):
+        batch_id = "testsend-xxxx-xxxx-xxxx-xxxxxxxxxxx2"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/batches/%s/send"
+            % (pingen2sdk.api_production, batch_id)
+        )
+
+        batches = self._construct_resource()
+
+        responses.patch(url, json=self._get_expected_payload(batch_id), status=200)
+
+        response = batches.send(batch_id, "email")
+
+        assert response.status_code == 200
+        sent = responses.calls[0].request.body
+        assert '"batches_channel_email_send"' in sent
+        assert '"electronic_email"' in sent
+
+    @responses.activate
+    def test_send_batch_ebill(self):
+        batch_id = "testsend-xxxx-xxxx-xxxx-xxxxxxxxxxx3"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/batches/%s/send"
+            % (pingen2sdk.api_production, batch_id)
+        )
+
+        batches = self._construct_resource()
+
+        responses.patch(url, json=self._get_expected_payload(batch_id), status=200)
+
+        response = batches.send(batch_id, "ebill")
+
+        assert response.status_code == 200
+        sent = responses.calls[0].request.body
+        assert '"batches_channel_ebill_send"' in sent
+        assert '"electronic_ebill"' in sent
+
+    @responses.activate
+    def test_update_batch(self):
+        batch_id = "testupdt-xxxx-xxxx-xxxx-xxxxxxxxx551"
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/batches/%s" % (
+            pingen2sdk.api_production,
+            batch_id,
+        )
+
+        batches = self._construct_resource()
+
+        responses.patch(
+            url,
+            json=self._get_expected_payload(batch_id),
+            status=200,
+        )
+
+        response = batches.update(batch_id, "Updated Batch", "rocket")
+
+        assert response.data["data"]["id"] == batch_id
+        assert response.status_code == 200
+        sent = responses.calls[0].request.body
+        assert '"name": "Updated Batch"' in sent
+        assert '"icon": "rocket"' in sent
+
+    @responses.activate
+    def test_update_batch_without_attributes(self):
+        batch_id = "testupdt-xxxx-xxxx-xxxx-xxxxxxxxx552"
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/batches/%s" % (
+            pingen2sdk.api_production,
+            batch_id,
+        )
+
+        batches = self._construct_resource()
+
+        responses.patch(url, json=self._get_expected_payload(batch_id), status=200)
+
+        response = batches.update(batch_id)
+
+        assert response.status_code == 200
+        sent = responses.calls[0].request.body
+        assert '"attributes": {}' in sent
+
+    @responses.activate
+    def test_create_batch_with_channel_type(self):
+        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/batches" % (
+            pingen2sdk.api_production,
+        )
+
+        batches = self._construct_resource()
+
+        responses.post(
+            url,
+            json=self._get_expected_payload("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx12"),
+            status=201,
+        )
+
+        response = batches.create(
+            "https://s3.example/bucket/filename?signer=url",
+            "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
+            "test batch",
+            "flash",
+            "test.pdf",
+            "left",
+            "merge",
+            "page",
+            channel_type="ebill",
+        )
+
+        assert response.status_code == 201
+        sent = responses.calls[0].request.body
+        assert '"channel_type": "ebill"' in sent
 
     @responses.activate
     def test_cancel_batch(self):
@@ -361,6 +475,11 @@ class TestBatches(object):
         )
 
         assert response.status_code == 204
+        sent = responses.calls[0].request.body
+        assert '"type": "batches"' in sent
+        assert '"id": "%s"' % batch_id in sent
+        assert '"with_letters": true' in sent
+        assert '"with_deliverables": true' in sent
 
     @responses.activate
     def test_edit_batch(self):
