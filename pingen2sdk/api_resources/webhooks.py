@@ -1,7 +1,7 @@
 import pingen2sdk
 import json
 
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Union
 
 
 class Webhooks(object):
@@ -10,7 +10,7 @@ class Webhooks(object):
     def __init__(
         self,
         organisation_id: str,
-        access_token: str,
+        access_token: Union[str, "pingen2sdk.OAuth"],
         use_staging: bool = False,
     ):
         self.organisation_id = organisation_id

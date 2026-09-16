@@ -13,6 +13,7 @@ auth_staging: str = "https://identity-staging.pingen.com"
 request_timeout: int = 20
 
 # OAuth
+from pingen2sdk.access_token import AccessToken
 from pingen2sdk.oauth import OAuth
 
 # PingenResponse
@@ -26,6 +27,9 @@ from pingen2sdk.api import APIRequestor
 
 # API Resources
 from pingen2sdk.api_resources import *
+
+# Pingen high-level client
+from pingen2sdk.pingen import Pingen
 
 # PingenWebhook
 from pingen2sdk.webhook_event import WebhookEvent

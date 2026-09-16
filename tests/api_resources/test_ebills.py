@@ -18,14 +18,18 @@ class TestEbills(object):
                 "type": "ebills",
                 "attributes": {
                     "status": "string",
-                    "file_original_name": "lorem.pdf",
+                    "file_original_name": "test.pdf",
                     "file_pages": 2,
                     "recipient_identifier": "41100010014282213",
+                    "recipient_address": "ACME GmbH\\nExamplestreet 432\\n3000 Bern",
                     "invoice_number": "Invoice 8051",
                     "invoice_date": "2025-10-01",
                     "invoice_due_date": "2025-10-30",
-                    "invoice_value": 1.25,
+                    "invoice_value": 1250.3,
                     "invoice_currency": "CHF",
+                    "invoice_iban": "CH8009000000854254426",
+                    "invoice_address": "ACME GmbH\\nExamplestreet 432\\n3000 Bern",
+                    "invoice_reference": "111119346200000000000127257",
                     "price_value": 1.25,
                     "price_currency": "CHF",
                     "source": "api",
@@ -42,12 +46,38 @@ class TestEbills(object):
                         },
                     },
                     "events": {
-                        "links": {
-                            "related": {"href": "string", "meta": {"count": 0}}
-                        }
+                        "links": {"related": {"href": "string", "meta": {"count": 0}}}
+                    },
+                    "batch": {
+                        "links": {"related": "string"},
+                        "data": {
+                            "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                            "type": "batches",
+                        },
                     },
                 },
                 "links": {"self": "string"},
+                "meta": {
+                    "abilities": {
+                        "self": {
+                            "get-pdf-raw": "ok",
+                            "get-pdf-validation": "ok",
+                            "restore-original": "ok",
+                            "delete": "ok",
+                            "cancel": "ok",
+                            "submit": "ok",
+                            "apply-preset": "ok",
+                            "create-preset": "ok",
+                            "revalidate": "ok",
+                            "fix-format": "ok",
+                            "define-qr": "ok",
+                            "define-invoice-date": "ok",
+                            "define-invoice-due-date": "ok",
+                            "define-recipient-identifier": "ok",
+                            "define-invoice-number": "ok",
+                        }
+                    }
+                },
             },
             "included": [{}],
         }
@@ -79,9 +109,12 @@ class TestEbills(object):
     @responses.activate
     def test_get_ebill(self):
         ebill_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills/%s" % (
-            pingen2sdk.api_production,
-            ebill_id,
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills/%s"
+            % (
+                pingen2sdk.api_production,
+                ebill_id,
+            )
         )
 
         ebills = self._construct_resource()
@@ -129,7 +162,7 @@ class TestEbills(object):
                         "type": "ebills",
                         "attributes": {
                             "status": "string",
-                            "file_original_name": "lorem.pdf",
+                            "file_original_name": "test.pdf",
                             "file_pages": 2,
                             "recipient_identifier": "41100010014282213",
                             "invoice_number": "Invoice 8051",
@@ -192,8 +225,9 @@ class TestEbills(object):
 
     @responses.activate
     def test_create_ebill(self):
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills" % (
-            pingen2sdk.api_production,
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills"
+            % (pingen2sdk.api_production,)
         )
 
         ebills = self._construct_resource()
@@ -211,7 +245,7 @@ class TestEbills(object):
         response = ebills.create(
             "https://s3.example/bucket/filename?signer=url",
             "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
-            "lorem.pdf",
+            "test.pdf",
             True,
             None,
             {
@@ -233,8 +267,9 @@ class TestEbills(object):
 
     @responses.activate
     def test_upload_and_create_ebill(self):
-        url = "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills" % (
-            pingen2sdk.api_production,
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills"
+            % (pingen2sdk.api_production,)
         )
 
         ebills = self._construct_resource()
@@ -251,8 +286,8 @@ class TestEbills(object):
         )
 
         response = ebills.upload_and_create(
-            "tests/api_resources/files/lorem.pdf",
-            "lorem.pdf",
+            "tests/api_resources/files/test.pdf",
+            "test.pdf",
             False,
             {
                 "invoice_number": "Invoice 8051",
@@ -268,3 +303,82 @@ class TestEbills(object):
             "Content-Type": "application/vnd.api+json",
             "X-Request-Id": "requestx-xxxx-xxxx-xxxx-xxxxxxxxxxx3",
         }
+
+    @responses.activate
+    def test_send_ebill(self):
+        ebill_id = "testsend-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills/%s/send"
+            % (pingen2sdk.api_production, ebill_id)
+        )
+
+        ebills = self._construct_resource()
+
+        responses.patch(
+            url,
+            json=self._get_expected_payload(ebill_id),
+            status=200,
+        )
+
+        response = ebills.send(ebill_id)
+
+        assert response.data["data"]["id"] == ebill_id
+        assert response.status_code == 200
+        sent = responses.calls[0].request.body
+        assert '"type": "ebills"' in sent
+        assert '"id": "%s"' % ebill_id in sent
+
+    @responses.activate
+    def test_cancel_ebill(self):
+        ebill_id = "testcanc-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills/%s/cancel"
+            % (pingen2sdk.api_production, ebill_id)
+        )
+
+        ebills = self._construct_resource()
+
+        responses.patch(url, status=202)
+
+        response = ebills.cancel(ebill_id)
+
+        assert response.status_code == 202
+
+    @responses.activate
+    def test_delete_ebill(self):
+        ebill_id = "testdelx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills/%s"
+            % (
+                pingen2sdk.api_production,
+                ebill_id,
+            )
+        )
+
+        ebills = self._construct_resource()
+
+        responses.delete(url, status=204)
+
+        response = ebills.delete(ebill_id)
+
+        assert response.status_code == 204
+
+    @responses.activate
+    def test_get_ebill_file(self):
+        ebill_id = "testfile-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+        url = (
+            "%s/organisations/testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1/deliveries/ebills/%s/file"
+            % (pingen2sdk.api_staging, ebill_id)
+        )
+
+        access_token = "test_access_token"
+        organisation_id = "testxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx1"
+
+        ebills = pingen2sdk.Ebills(organisation_id, access_token, True)
+
+        responses.get(
+            url,
+            match=[responses.matchers.request_kwargs_matcher({"stream": True})],
+        )
+
+        ebills.get_file(ebill_id)

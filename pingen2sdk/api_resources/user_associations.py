@@ -1,6 +1,6 @@
 import pingen2sdk
 
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Union
 
 
 class UserAssociations(object):
@@ -8,7 +8,7 @@ class UserAssociations(object):
 
     def __init__(
         self,
-        access_token: str,
+        access_token: Union[str, "pingen2sdk.OAuth"],
         use_staging: bool = False,
     ):
         self.api_requestor = pingen2sdk.APIRequestor(access_token, use_staging)

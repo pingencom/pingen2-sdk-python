@@ -24,6 +24,44 @@ This SDK supports staging as well. **When initiating the resource** (see Usage),
 
 The simplest way to integrate is using the client credentials grant (see https://api.pingen.com/documentation#section/Authentication/Which-grant-type-should-i-use)
 
+### Recommended: the `Pingen` client
+
+Create a `Pingen` client once with your credentials and obtain resources from it.
+The access token is fetched once, reused across all resources and refreshed
+automatically before it expires, so you never pass a token or the staging flag
+around:
+
+```python
+import pingen2sdk
+
+pingen = pingen2sdk.Pingen(
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_SECRET",
+    use_staging=True,
+    scope="letter batch webhook organisation_read email ebill",
+)
+
+organisationList = pingen.organisations().get_collection()
+organisation_id = organisationList.data["data"][0]["id"]
+
+response = pingen.letters(organisation_id).upload_and_create(
+    "./letter.pdf",
+    "sdk.pdf",
+    "left",
+    False,
+    "fast",
+    "simplex",
+    "color",
+)
+
+letter_id = response.data["data"]["id"]
+```
+
+### Manual token handling
+
+You can also obtain a token yourself and pass it (as a string) to each resource.
+This still works and is fully supported:
+
 ```python
 import pingen2sdk
 
@@ -56,6 +94,10 @@ response = LettersEndpoint.upload_and_create(
 
 letter_id = response.data["data"]["id"]
 ```
+
+> Tip: pass the `pingen2sdk.OAuth` instance (instead of a raw token string) to any
+> resource constructor to get the same automatic token reuse and refresh without
+> using the `Pingen` client.
 
 # Examples & Docs
 
@@ -97,3 +139,37 @@ with:
 ```sh
 tox -e fmt
 ```
+
+## Integration tests
+
+`tests/integration` contains an end-to-end suite that runs against the real
+Pingen **staging** API (organisations, letters, batches, webhooks, emails,
+e-bills and user endpoints). It is marked with the `integration` marker and is
+therefore **excluded from the normal test run** – it never runs unless you ask
+for it explicitly.
+
+1. Copy the credentials template and fill in your staging OAuth credentials:
+
+   ```sh
+   cp .env.example .env
+   ```
+
+   Fill in `PINGEN2_CLIENT_ID` and `PINGEN2_CLIENT_SECRET`. Optionally set
+   `PINGEN2_ORGANISATION_ID` to run against a specific organisation (handy when
+   your credentials have access to several); when left empty the first
+   organisation returned by the API is used.
+
+   (`.env` is git-ignored. The values can also be supplied as real environment
+   variables, e.g. in CI.)
+
+2. Run only the integration suite:
+
+   ```sh
+   pytest -m integration tests/integration
+   ```
+
+If no credentials are configured, every integration test is skipped rather than
+failing, so `pytest -m integration` is safe to run anywhere. The cancel / delete
+/ update steps assert strictly against the real API and therefore need the
+deliverable to reach the required state (they rely on the committed
+`test_simulate_cancellable.pdf` document and short `time.sleep` waits).

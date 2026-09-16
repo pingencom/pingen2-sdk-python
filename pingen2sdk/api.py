@@ -2,7 +2,7 @@ import requests
 import pingen2sdk
 
 from io import IOBase, BytesIO
-from typing import Any, Dict, Mapping, Optional, cast
+from typing import Any, Dict, Mapping, Optional, Union, cast
 from requests.models import PreparedRequest
 
 
@@ -18,17 +18,28 @@ def _response_interpreter(
 
 
 class APIRequestor(object):
-    access_token: str
     api_base: str
     user_agent: str = "PINGEN.SDK.PYTHON"
 
-    def __init__(self, access_token: str, use_staging: Optional[bool] = False):
+    def __init__(
+        self,
+        access_token: Union[str, "pingen2sdk.OAuth"],
+        use_staging: Optional[bool] = False,
+    ):
         if use_staging is False:
             self.api_base = pingen2sdk.api_production
         else:
             self.api_base = pingen2sdk.api_staging
 
-        self.access_token = access_token
+        self._token_source = access_token
+
+    @property
+    def access_token(self) -> str:
+        source = self._token_source
+        if hasattr(source, "get_access_token"):
+            return source.get_access_token()
+
+        return source
 
     def perform_get_request(
         self,
@@ -90,9 +101,14 @@ class APIRequestor(object):
 
         return _response_interpreter(r.text, r.status_code, r.headers)
 
-    def perform_delete_request(self, url: str) -> pingen2sdk.PingenResponse:
+    def perform_delete_request(
+        self,
+        url: str,
+        payload: Optional[str] = None,
+    ) -> pingen2sdk.PingenResponse:
         r = requests.delete(
             self.prepare_path(url),
+            data=payload,
             headers=self.request_headers(),
             timeout=pingen2sdk.request_timeout,
         )

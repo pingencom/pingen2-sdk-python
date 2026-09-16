@@ -1,14 +1,15 @@
 import pingen2sdk
 import json
 
-from typing import Any, Mapping, Optional, Dict
+from io import IOBase
+from typing import Any, Mapping, Optional, Dict, Union
 
 
 class Emails(object):
     def __init__(
         self,
         organisation_id: str,
-        access_token: str,
+        access_token: Union[str, "pingen2sdk.OAuth"],
         use_staging: bool = False,
     ):
         self.organisation_id = organisation_id
@@ -55,7 +56,7 @@ class Emails(object):
             file_original_name,
             auto_send,
             meta_data,
-            relationships
+            relationships,
         )
 
     def create(
@@ -88,4 +89,30 @@ class Emails(object):
         return self.api_requestor.perform_post_request(
             "/organisations/%s/deliveries/emails" % self.organisation_id,
             json.dumps(payload),
+        )
+
+    def cancel(
+        self,
+        email_id: str,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_cancel_request(
+            "/organisations/%s/deliveries/emails/%s/cancel"
+            % (self.organisation_id, email_id),
+        )
+
+    def delete(
+        self,
+        email_id: str,
+    ) -> pingen2sdk.PingenResponse:
+        return self.api_requestor.perform_delete_request(
+            "/organisations/%s/deliveries/emails/%s" % (self.organisation_id, email_id),
+        )
+
+    def get_file(
+        self,
+        email_id: str,
+    ) -> IOBase:
+        return self.api_requestor.perform_stream_request(
+            "/organisations/%s/deliveries/emails/%s/file"
+            % (self.organisation_id, email_id),
         )

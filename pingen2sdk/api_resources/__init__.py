@@ -11,4 +11,6 @@ from pingen2sdk.api_resources.batches import Batches as Batches
 from pingen2sdk.api_resources.batch_events import BatchEvents as BatchEvents
 from pingen2sdk.api_resources.webhooks import Webhooks as Webhooks
 from pingen2sdk.api_resources.ebills import Ebills as Ebills
+from pingen2sdk.api_resources.ebill_events import EbillEvents as EbillEvents
 from pingen2sdk.api_resources.emails import Emails as Emails
+from pingen2sdk.api_resources.email_events import EmailEvents as EmailEvents

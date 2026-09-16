@@ -3,7 +3,7 @@ import pingen2sdk
 from typing import Any, Mapping, Optional, Union
 
 
-class BatchEvents(object):
+class EbillEvents(object):
     organisation_id: str
     api_requestor: pingen2sdk.APIRequestor
 
@@ -18,12 +18,13 @@ class BatchEvents(object):
 
     def get_collection(
         self,
-        batch_id: str,
+        ebill_id: str,
         params: Optional[Mapping[str, Any]] = None,
         supplied_headers: Optional[Mapping[str, str]] = None,
     ) -> pingen2sdk.PingenResponse:
         return self.api_requestor.perform_get_request(
-            "/organisations/%s/batches/%s/events" % (self.organisation_id, batch_id),
+            "/organisations/%s/deliveries/ebills/%s/events"
+            % (self.organisation_id, ebill_id),
             params,
             supplied_headers,
         )

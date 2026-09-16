@@ -19,7 +19,7 @@ class TestLetters(object):
                 "type": "letters",
                 "attributes": {
                     "status": "string",
-                    "file_original_name": "lorem.pdf",
+                    "file_original_name": "test.pdf",
                     "file_pages": 2,
                     "address": "Hans Meier\nExample street 4\n8000 Zürich\nSwitzerland",
                     "address_position": "left",
@@ -76,15 +76,20 @@ class TestLetters(object):
                             "edit": "ok",
                             "get-pdf-raw": "ok",
                             "get-pdf-validation": "ok",
+                            "restore-original": "ok",
                             "change-paper-type": "ok",
                             "change-window-position": "ok",
                             "create-coverpage": "ok",
                             "add-attachment": "ok",
                             "fix-overwrite-restricted-areas": "ok",
-                            "fix-coverpage": "ok",
-                            "fix-country": "ok",
                             "fix-regular-paper": "ok",
                             "fix-address": "ok",
+                            "fix-interactive-content": "ok",
+                            "fix-format": "ok",
+                            "fix-address-position": "ok",
+                            "apply-preset": "ok",
+                            "create-preset": "ok",
+                            "revalidate": "ok",
                         }
                     }
                 },
@@ -169,7 +174,7 @@ class TestLetters(object):
                         "type": "letters",
                         "attributes": {
                             "status": "string",
-                            "file_original_name": "lorem.pdf",
+                            "file_original_name": "test.pdf",
                             "file_pages": 2,
                             "address": "Hans Meier\nExample street 4\n8000 Zürich\nSwitzerland",
                             "address_position": "left",
@@ -265,7 +270,7 @@ class TestLetters(object):
         response = letters.create(
             "https://s3.example/bucket/filename?signer=url",
             "$2y$10$BLOzVbYTXrh4LZbSYNVf7eEDrc58vvQ9PRVZABqV/9WS1eqIcm3M",
-            "lorem.pdf",
+            "test.pdf",
             "left",
             True,
             "fast",
@@ -327,8 +332,8 @@ class TestLetters(object):
         )
 
         response = letters.upload_and_create(
-            "tests/api_resources/files/lorem.pdf",
-            "lorem.pdf",
+            "tests/api_resources/files/test.pdf",
+            "test.pdf",
             "left",
             False,
         )
