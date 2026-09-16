@@ -15,38 +15,38 @@ pytestmark = pytest.mark.integration
 
 
 class TestOAuthIntegration:
-    def _build_oauth(self, credentials, staging):
+    def _build_oauth(self, credentials):
         return pingen2sdk.OAuth(
             client_id=credentials["PINGEN2_CLIENT_ID"],
             client_secret=credentials["PINGEN2_CLIENT_SECRET"],
-            use_staging=staging,
+            use_staging=support.USE_STAGING,
             scope=support.SCOPE,
         )
 
-    def test_token_can_be_obtained_and_used(self, credentials, staging):
-        oauth = self._build_oauth(credentials, staging)
+    def test_token_can_be_obtained_and_used(self, credentials):
+        oauth = self._build_oauth(credentials)
 
         token = oauth.get_access_token()
         assert token, "Token request must succeed"
         assert oauth.get_current_token().expires_in > 0
 
-        organisations = pingen2sdk.Organisations(oauth, staging)
+        organisations = pingen2sdk.Organisations(oauth, support.USE_STAGING)
         response = organisations.get_collection()
         assert response.status_code == 200
         assert response.data["data"], "Expected at least one organisation"
 
-    def test_token_is_reused_while_valid(self, credentials, staging):
-        oauth = self._build_oauth(credentials, staging)
+    def test_token_is_reused_while_valid(self, credentials):
+        oauth = self._build_oauth(credentials)
 
         first = oauth.get_access_token()
         second = oauth.get_access_token()
 
         assert first == second
 
-    def test_expired_token_is_refreshed(self, credentials, staging):
-        oauth = self._build_oauth(credentials, staging)
+    def test_expired_token_is_refreshed(self, credentials):
+        oauth = self._build_oauth(credentials)
 
-        organisations = pingen2sdk.Organisations(oauth, staging)
+        organisations = pingen2sdk.Organisations(oauth, support.USE_STAGING)
 
         # Initial call acquires the first token and proves it works.
         assert organisations.get_collection().status_code == 200

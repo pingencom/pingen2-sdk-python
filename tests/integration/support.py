@@ -2,9 +2,7 @@
 
 The integration tests hit the real Pingen **staging** API and therefore need
 valid staging credentials. Credentials are read from a ``.env`` file at the
-repository root (copy ``.env.example`` to ``.env`` and fill it in) or from real
-environment variables (handy for CI). Real environment variables take
-precedence over values in ``.env``.
+repository root (copy ``.env.example`` to ``.env`` and fill it in).
 """
 
 import os
@@ -26,10 +24,11 @@ FILE_NAME_CANCELLABLE = "test_simulate_cancellable.pdf"
 _KEYS = (
     "PINGEN2_CLIENT_ID",
     "PINGEN2_CLIENT_SECRET",
-    "PINGEN2_ORGANIZATION_ID",
-    "PINGEN2_ORGANIZATION_NAME",
-    "PINGEN2_USE_STAGING",
+    "PINGEN2_ORGANISATION_ID",
 )
+
+# The suite must never run against production.
+USE_STAGING = True
 
 
 def _repo_root() -> str:
@@ -56,11 +55,7 @@ def _parse_dotenv(path: str) -> Dict[str, str]:
 
 
 def load_credentials() -> Dict[str, str]:
-    """Return the integration credentials, merging ``.env`` and real env vars.
-
-    Real environment variables win over ``.env`` so that CI can inject secrets
-    without writing a file to disk.
-    """
+    """Return the integration credentials."""
     dotenv_values = _parse_dotenv(os.path.join(_repo_root(), ".env"))
 
     credentials: Dict[str, str] = {}
@@ -75,12 +70,6 @@ def missing_credentials(credentials: Dict[str, str]) -> bool:
     client_id = credentials.get("PINGEN2_CLIENT_ID")
     client_secret = credentials.get("PINGEN2_CLIENT_SECRET")
     return not (client_id and client_secret)
-
-
-def use_staging(credentials: Dict[str, str]) -> bool:
-    # Default to staging – integration tests must never run against production.
-    raw = (credentials.get("PINGEN2_USE_STAGING") or "true").strip().lower()
-    return raw not in ("0", "false", "no", "off")
 
 
 def document_path(file_name: str = FILE_NAME) -> str:

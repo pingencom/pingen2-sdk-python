@@ -22,17 +22,12 @@ def credentials():
 
 
 @pytest.fixture(scope="session")
-def staging(credentials):
-    return support.use_staging(credentials)
-
-
-@pytest.fixture(scope="session")
-def access_token(credentials, staging):
+def access_token(credentials):
     pingen2sdk.client_id = credentials["PINGEN2_CLIENT_ID"]
     pingen2sdk.client_secret = credentials["PINGEN2_CLIENT_SECRET"]
 
     resp = pingen2sdk.OAuth.get_token(
-        use_staging=staging,
+        use_staging=support.USE_STAGING,
         grant_type="client_credentials",
         scope=support.SCOPE,
     )
@@ -44,18 +39,13 @@ def access_token(credentials, staging):
 
 
 @pytest.fixture(scope="session")
-def organisation_name(credentials):
-    return credentials.get("PINGEN2_ORGANIZATION_NAME") or ""
-
-
-@pytest.fixture(scope="session")
-def organisations(access_token, staging):
-    return pingen2sdk.Organisations(access_token, staging)
+def organisations(access_token):
+    return pingen2sdk.Organisations(access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
 def organisation_id(credentials, organisations):
-    configured = credentials.get("PINGEN2_ORGANIZATION_ID")
+    configured = credentials.get("PINGEN2_ORGANISATION_ID")
     if configured:
         print("Using organisation ID from .env: %s" % configured)
         return configured
@@ -74,55 +64,55 @@ def document_path():
 
 
 @pytest.fixture(scope="session")
-def letters(organisation_id, access_token, staging):
-    return pingen2sdk.Letters(organisation_id, access_token, staging)
+def letters(organisation_id, access_token):
+    return pingen2sdk.Letters(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def letter_events(organisation_id, access_token, staging):
-    return pingen2sdk.LetterEvents(organisation_id, access_token, staging)
+def letter_events(organisation_id, access_token):
+    return pingen2sdk.LetterEvents(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def batches(organisation_id, access_token, staging):
-    return pingen2sdk.Batches(organisation_id, access_token, staging)
+def batches(organisation_id, access_token):
+    return pingen2sdk.Batches(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def batch_events(organisation_id, access_token, staging):
-    return pingen2sdk.BatchEvents(organisation_id, access_token, staging)
+def batch_events(organisation_id, access_token):
+    return pingen2sdk.BatchEvents(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def webhooks(organisation_id, access_token, staging):
-    return pingen2sdk.Webhooks(organisation_id, access_token, staging)
+def webhooks(organisation_id, access_token):
+    return pingen2sdk.Webhooks(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def emails(organisation_id, access_token, staging):
-    return pingen2sdk.Emails(organisation_id, access_token, staging)
+def emails(organisation_id, access_token):
+    return pingen2sdk.Emails(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def email_events(organisation_id, access_token, staging):
-    return pingen2sdk.EmailEvents(organisation_id, access_token, staging)
+def email_events(organisation_id, access_token):
+    return pingen2sdk.EmailEvents(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def ebills(organisation_id, access_token, staging):
-    return pingen2sdk.Ebills(organisation_id, access_token, staging)
+def ebills(organisation_id, access_token):
+    return pingen2sdk.Ebills(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def ebill_events(organisation_id, access_token, staging):
-    return pingen2sdk.EbillEvents(organisation_id, access_token, staging)
+def ebill_events(organisation_id, access_token):
+    return pingen2sdk.EbillEvents(organisation_id, access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def users(access_token, staging):
-    return pingen2sdk.Users(access_token, staging)
+def users(access_token):
+    return pingen2sdk.Users(access_token, support.USE_STAGING)
 
 
 @pytest.fixture(scope="session")
-def user_associations(access_token, staging):
-    return pingen2sdk.UserAssociations(access_token, staging)
+def user_associations(access_token):
+    return pingen2sdk.UserAssociations(access_token, support.USE_STAGING)

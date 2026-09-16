@@ -60,15 +60,11 @@ class TestOrganisations:
         assert response.status_code == 200
         assert isinstance(response.data["data"], list)
 
-    def test_3_get_organisation_by_id(
-        self, organisations, organisation_id, organisation_name
-    ):
+    def test_3_get_organisation_by_id(self, organisations, organisation_id):
         response = organisations.get_details(organisation_id)
 
         assert response.status_code == 200
         assert response.data["data"]["id"] == organisation_id
-        if organisation_name:
-            assert response.data["data"]["attributes"]["name"] == organisation_name
 
 
 # =============================================================================

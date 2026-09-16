@@ -155,10 +155,9 @@ for it explicitly.
    ```
 
    Fill in `PINGEN2_CLIENT_ID` and `PINGEN2_CLIENT_SECRET`. Optionally set
-   `PINGEN2_ORGANIZATION_ID` to run against a specific organisation (handy when
+   `PINGEN2_ORGANISATION_ID` to run against a specific organisation (handy when
    your credentials have access to several); when left empty the first
-   organisation returned by the API is used. `PINGEN2_ORGANIZATION_NAME` is
-   optional and, when set, is asserted against the fetched organisation.
+   organisation returned by the API is used.
 
    (`.env` is git-ignored. The values can also be supplied as real environment
    variables, e.g. in CI.)
