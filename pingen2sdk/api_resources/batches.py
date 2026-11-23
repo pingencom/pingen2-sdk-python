@@ -124,6 +124,11 @@ class Batches(object):
         ] = None,
         channel_type: Optional[Literal["post", "email", "ebill"]] = None,
     ) -> pingen2sdk.PingenResponse:
+        """Create a batch from an uploaded file.
+
+        ``grouping_options_split_position`` is required by the API when
+        ``grouping_options_split_type`` is ``custom`` or ``qr_invoice``.
+        """
         attributes: Dict[str, Any] = {
             "file_url": file_url,
             "file_url_signature": file_url_signature,
@@ -272,10 +277,6 @@ class Batches(object):
                         "type": "batches",
                         "id": batch_id,
                         "attributes": {
-                            # TODO: `with_letters` is still required by the API but
-                            # is deprecated in favour of `with_deliverables`. Remove
-                            # it once the API no longer requires it.
-                            "with_letters": with_deliverables,
                             "with_deliverables": with_deliverables,
                         },
                     }

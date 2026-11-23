@@ -478,7 +478,6 @@ class TestBatches(object):
         sent = responses.calls[0].request.body
         assert '"type": "batches"' in sent
         assert '"id": "%s"' % batch_id in sent
-        assert '"with_letters": true' in sent
         assert '"with_deliverables": true' in sent
 
     @responses.activate
