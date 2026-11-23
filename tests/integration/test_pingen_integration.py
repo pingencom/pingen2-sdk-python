@@ -260,6 +260,7 @@ class TestBatchesHappyCase:
             "merge",
             "qr_invoice",
             2,
+            grouping_options_split_position="last_page",
         )
 
         assert response.data["data"]["id"]
@@ -319,6 +320,7 @@ class TestBatchesDeleteCase:
             "merge",
             "qr_invoice",
             2,
+            grouping_options_split_position="last_page",
         )
 
         assert response.data["data"]["id"]
